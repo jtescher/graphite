@@ -87,14 +87,14 @@ template "#{basedir}/bin/set_admin_passwd.py" do
   mode 00755
 end
 
-cookbook_file "#{storagedir}/graphite.db" do
-  action :create_if_missing
-  notifies :run, "execute[set admin password]"
-end
-
 execute "set admin password" do
   command "#{basedir}/bin/set_admin_passwd.py root #{node['graphite']['password']}"
   action :nothing
+end
+
+cookbook_file "#{storagedir}/graphite.db" do
+  action :create_if_missing
+  notifies :run, resources(:execute => 'set admin password')
 end
 
 # This is not done in the cookbook_file above to avoid triggering a password set on permissions changes
