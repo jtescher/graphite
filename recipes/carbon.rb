@@ -40,6 +40,9 @@ execute "install carbon" do
   cwd "#{Chef::Config[:file_cache_path]}/carbon-#{version}"
 end
 
+service_type = node['graphite']['carbon']['service_type']
+include_recipe "#{cookbook_name}::#{recipe_name}_#{service_type}"
+
 template "#{node['graphite']['base_dir']}/conf/carbon.conf" do
   owner node['apache']['user']
   group node['apache']['group']
@@ -52,7 +55,7 @@ template "#{node['graphite']['base_dir']}/conf/carbon.conf" do
              :max_updates_per_second => node['graphite']['carbon']['max_updates_per_second'],
              :log_whisper_updates => node['graphite']['carbon']['log_whisper_updates'],
              :storage_dir => node['graphite']['storage_dir'])
-  notifies :restart, "service[carbon-cache]"
+  notifies :restart, resource(:service => 'carbon-cache')
 end
 
 template "#{node['graphite']['base_dir']}/conf/storage-schemas.conf" do
@@ -77,6 +80,3 @@ directory "#{node['graphite']['base_dir']}/lib/twisted/plugins/" do
   group node['apache']['group']
   recursive true
 end
-
-service_type = node['graphite']['carbon']['service_type']
-include_recipe "#{cookbook_name}::#{recipe_name}_#{service_type}"
