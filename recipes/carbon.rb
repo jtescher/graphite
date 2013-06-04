@@ -55,7 +55,7 @@ template "#{node['graphite']['base_dir']}/conf/carbon.conf" do
              :max_updates_per_second => node['graphite']['carbon']['max_updates_per_second'],
              :log_whisper_updates => node['graphite']['carbon']['log_whisper_updates'],
              :storage_dir => node['graphite']['storage_dir'])
-  notifies :restart, resource(:service => 'carbon-cache')
+  notifies :restart, resources(:service => 'carbon-cache')
 end
 
 template "#{node['graphite']['base_dir']}/conf/storage-schemas.conf" do
