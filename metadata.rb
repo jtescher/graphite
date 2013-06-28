@@ -8,7 +8,7 @@ version          "0.4.2"
 
 supports "ubuntu"
 
-depends  "python"
+depends  "python", '~> 1.0.8'
 depends  "apache2"
 depends  "runit", "<= 0.16.2"
 depends  "memcached"
