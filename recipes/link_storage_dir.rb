@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: graphite
-# Recipe:: default
+# Recipe:: web
 #
 # Copyright 2011, Heavy Water Software Inc.
 #
@@ -17,10 +17,21 @@
 # limitations under the License.
 #
 
-include_recipe "python"
-include_recipe "memcached"
+unless node['graphite']['linked_storage_dir'].empty?
 
-include_recipe "graphite::link_storage_dir"
-include_recipe "graphite::whisper"
-include_recipe "graphite::carbon"
-include_recipe "graphite::web"
+  directory node['graphite']['base_dir'] do
+    recursive true
+  end
+
+  directory node['graphite']['linked_storage_dir'] do
+    owner node['apache']['user']
+    group node['apache']['group']
+    recursive true
+  end
+
+  link "#{node['graphite']['base_dir']}/storage" do
+    owner node['apache']['user']
+    group node['apache']['group']
+    to node['graphite']['linked_storage_dir']
+  end
+end
